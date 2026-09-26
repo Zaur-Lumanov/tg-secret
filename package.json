@@ -1,0 +1,34 @@
+{
+  "name": "tg-secret-monorepo",
+  "version": "0.0.0",
+  "description": "Telegram secret chats (end-to-end encrypted) for Node.js: a library and a console client, with local encryption and YubiKey / Windows Hello unlock",
+  "license": "MIT",
+  "author": "Zaur Lumanov",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zaur-lumanov/tg-secret.git"
+  },
+  "homepage": "https://github.com/zaur-lumanov/tg-secret#readme",
+  "bugs": {
+    "url": "https://github.com/zaur-lumanov/tg-secret/issues"
+  },
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "start": "node --conditions=tg-secret-source --import tsx packages/cli/src/main.ts",
+    "auth": "node --conditions=tg-secret-source --import tsx packages/cli/src/main.ts auth",
+    "build": "yarn workspace tg-secret-core build && yarn workspace tg-secret build",
+    "typecheck": "yarn workspaces run typecheck",
+    "test": "yarn workspaces run test"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

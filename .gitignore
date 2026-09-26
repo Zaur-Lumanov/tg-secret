@@ -1,0 +1,34 @@
+# dependencies and build output (root and packages/*)
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+*.tgz
+
+# copied from the root by each package's prepack
+packages/*/LICENSE
+
+# account data: API keys, sessions, secret chat keys, downloads.
+# The client keeps it in the per-user data directory; accounts/ appears here only
+# with the old layout or with --data-dir pointing into the repository.
+accounts/
+
+# may hold an npm auth token
+.npmrc
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local environment and editors
+.env
+.env.*
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
