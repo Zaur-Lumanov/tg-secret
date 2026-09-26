@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    // the published package has no sources, so source maps would point nowhere
+    "sourceMap": false,
+    // builds against the published shape of tg-secret-core (its dist), not its sources
+    "customConditions": []
+  },
+  "include": ["src"]
+}

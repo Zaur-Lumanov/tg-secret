@@ -1,0 +1,45 @@
+{
+  "name": "tg-secret",
+  "version": "0.1.0",
+  "description": "Console Telegram client for secret chats (end-to-end encrypted), with encrypted local storage and YubiKey / Windows Hello unlock",
+  "license": "MIT",
+  "author": "Zaur Lumanov",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zaur-lumanov/tg-secret.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/zaur-lumanov/tg-secret/tree/main/packages/cli#readme",
+  "bugs": {
+    "url": "https://github.com/zaur-lumanov/tg-secret/issues"
+  },
+  "type": "module",
+  "bin": {
+    "tg-secret": "dist/main.js",
+    "tg-secret-cli": "dist/main.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./main": "./dist/main.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepack": "node -e \"require('fs').copyFileSync('../../LICENSE', 'LICENSE')\"",
+    "start": "node --conditions=tg-secret-source --import tsx src/main.ts",
+    "auth": "node --conditions=tg-secret-source --import tsx src/main.ts auth",
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "node --conditions=tg-secret-source --import tsx --test test/*.test.ts"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "dependencies": {
+    "tg-secret-core": "^0.1.0"
+  }
+}

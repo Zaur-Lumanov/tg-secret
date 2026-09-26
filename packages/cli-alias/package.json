@@ -1,0 +1,43 @@
+{
+  "name": "tg-secret-cli",
+  "version": "0.1.0",
+  "description": "Same as the \"tg-secret\" package: console Telegram client for secret chats. Installs both commands, tg-secret and tg-secret-cli",
+  "license": "MIT",
+  "author": "Zaur Lumanov",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zaur-lumanov/tg-secret.git",
+    "directory": "packages/cli-alias"
+  },
+  "homepage": "https://github.com/zaur-lumanov/tg-secret/tree/main/packages/cli-alias#readme",
+  "bugs": {
+    "url": "https://github.com/zaur-lumanov/tg-secret/issues"
+  },
+  "type": "module",
+  "bin": {
+    "tg-secret": "bin.js",
+    "tg-secret-cli": "bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "bin.js",
+    "index.js",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "prepack": "node -e \"require('fs').copyFileSync('../../LICENSE', 'LICENSE')\"",
+    "typecheck": "node --check bin.js && node --check index.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "dependencies": {
+    "tg-secret": "^0.1.0"
+  }
+}
