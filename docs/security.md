@@ -34,6 +34,7 @@ The password can't be removed, so there is always a fallback. Changing the passw
 Consequences worth knowing:
 - **Windows Hello** is bound to this computer and this Windows user. Anyone who can sign in to that Windows account (or knows its Windows Hello PIN) and runs the client can unlock it.
 - **Touch ID** is bound to this Mac. Adding a fingerprint in macOS makes the key unusable, so the Mac's password alone isn't enough to get in; the password of the client still works then.
+- **Windows Hello and Touch ID** can be added once per account: both are bound to this computer and user, so a second one would be the same person on the same device. To set one up again (for example after enrolling new fingerprints), remove it and add it anew. Several YubiKeys can be added.
 - **YubiKey**: after 3 wrong PINs the YubiKey blocks the key until the PUK is entered. A lost YubiKey can be removed with `/access remove`; the password still works.
 - **A forgotten password** can't be recovered. Without another unlock method, the only way out is to sign in again; the secret chats are lost, since their keys can't be decrypted.
 

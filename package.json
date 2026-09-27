@@ -1,7 +1,7 @@
 {
   "name": "tg-secret-monorepo",
   "version": "0.0.0",
-  "description": "Telegram secret chats (end-to-end encrypted) for Node.js: a library and a console client, with local encryption and YubiKey / Windows Hello unlock",
+  "description": "Telegram secret chats (end-to-end encrypted) for Node.js: a library and a console client, with local encryption and YubiKey / Windows Hello / Touch ID unlock",
   "license": "MIT",
   "author": "Zaur Lumanov",
   "repository": {
