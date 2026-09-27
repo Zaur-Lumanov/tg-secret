@@ -22,7 +22,8 @@
     "build": "yarn workspace tg-secret-core build && yarn workspace tg-secret build",
     "build:touchid": "yarn workspace tg-secret-core build:touchid",
     "typecheck": "yarn workspaces run typecheck",
-    "test": "yarn workspaces run test"
+    "test": "yarn workspaces run test",
+    "coverage": "yarn workspace tg-secret-core coverage && yarn workspace tg-secret coverage"
   },
   "engines": {
     "node": ">=24.7"

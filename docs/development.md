@@ -28,6 +28,7 @@ yarn install
 yarn start +79991234567   # the same as `tg-secret`, straight from the TypeScript sources
 yarn auth  +79991234567   # the same as `tg-secret auth`: sign in only
 yarn test                 # unit tests of every package
+yarn coverage             # the same with a coverage report
 yarn typecheck
 yarn build                # packages/*/dist, and the Touch ID helper on macOS
 ```
@@ -58,6 +59,8 @@ Relative imports inside the packages end in `.js`, as ESM requires.
 ## Tests
 
 `node:test` with `tsx`, in `packages/*/test`. Tests don't touch the network or the real data directory: they use temporary directories and fake clients. Unlock-method tests with hardware run against a simulated card.
+
+`yarn coverage` runs them with Node's built-in coverage: a summary per package in the console and `packages/*/coverage/lcov.info`. Only the files the tests load are counted. CI sends these reports to [Codecov](https://codecov.io).
 
 ## CI and releases
 

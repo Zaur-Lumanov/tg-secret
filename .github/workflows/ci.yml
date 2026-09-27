@@ -35,3 +35,29 @@ jobs:
       - name: Pack (dry run)
         shell: bash
         run: for p in core cli cli-alias; do (cd packages/$p && npm pack --dry-run); done
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Codecov takes the upload without a token, by the workflow's OIDC identity
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: npm install -g yarn@1.22.22
+      - run: yarn install --frozen-lockfile
+      - run: yarn coverage
+      # lcov paths are relative to each package; make them relative to the repository
+      - run: |
+          sed -i 's#^SF:#SF:packages/core/#' packages/core/coverage/lcov.info
+          sed -i 's#^SF:#SF:packages/cli/#' packages/cli/coverage/lcov.info
+      - uses: codecov/codecov-action@v5
+        with:
+          use_oidc: true
+          files: packages/core/coverage/lcov.info,packages/cli/coverage/lcov.info
+          # until the repository is connected on codecov.io, a failed upload doesn't fail CI
+          fail_ci_if_error: false

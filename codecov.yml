@@ -1,0 +1,10 @@
+# Coverage is shown, not enforced: no failing checks and no PR comments.
+coverage:
+  status:
+    project:
+      default:
+        informational: true
+    patch:
+      default:
+        informational: true
+comment: false
