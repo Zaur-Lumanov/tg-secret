@@ -16,7 +16,8 @@ import { dirname } from "node:path";
  *   master key (random, 256 bit) ──AES-256-GCM──▶ session, API keys, secret chat keys, files
  *
  * Slots: the password (Argon2id → KEK, always present), YubiKey PIV (KEK decrypted by the
- * key's RSA private key), Windows Hello (KEK derived from a Windows Hello signature).
+ * key's RSA private key), Windows Hello (KEK derived from a Windows Hello signature),
+ * Touch ID (KEK from ECDH with a Secure Enclave key).
  * Changing the password or adding a slot only re-wraps the master key. Each ciphertext is
  * bound to its purpose (GCM additional data), so e.g. a file can't be swapped for the session.
  */
@@ -69,9 +70,18 @@ export interface HelloSlot extends SlotBase {
   challenge: string;
 }
 
-export type Slot = PasswordSlot | PivSlot | HelloSlot;
+export interface TouchIdSlot extends SlotBase {
+  type: "touch-id";
+  label: string;
+  /** the Secure Enclave key (CryptoKit dataRepresentation): only this Mac can use it, after Touch ID */
+  seKey: string;
+  /** X9.63 public key of a one-time P-256 key; ECDH with the Secure Enclave key gives the KEK */
+  ephemeralPublicKey: string;
+}
+
+export type Slot = PasswordSlot | PivSlot | HelloSlot | TouchIdSlot;
 /** A slot as it is being added: the vault fills in id, key and createdAt. */
-export type NewSlot = Omit<PivSlot, keyof SlotBase> | Omit<HelloSlot, keyof SlotBase>;
+export type NewSlot = Omit<PivSlot, keyof SlotBase> | Omit<HelloSlot, keyof SlotBase> | Omit<TouchIdSlot, keyof SlotBase>;
 
 interface VaultFile {
   version: 2;

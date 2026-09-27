@@ -2,12 +2,13 @@ import { randomBytes } from "node:crypto";
 import type { Prompts } from "../prompts.js";
 import { askNewPassword, checkPassword } from "./password.js";
 import { Vault, WrongPasswordError, type Slot } from "./vault.js";
+import { enrollTouchId, touchIdKek, touchIdProblem } from "./touchId.js";
 import { deleteHello, enrollHello, isHelloSupported } from "./windowsHello.js";
 import { enrollYubikey, pivKekConsole } from "./yubikey.js";
 
 /**
  * Unlock methods of an unlocked account: the local password (always present) plus any
- * number of YubiKeys and Windows Hello keys. Asking the user to confirm such changes with
+ * number of YubiKeys, Windows Hello and Touch ID keys. Asking the user to confirm such changes with
  * the password is up to the caller (see verifyPassword).
  */
 export class AccessManager {
@@ -86,9 +87,35 @@ export class AccessManager {
     }
   }
 
+  /** Why Touch ID can't be added here, or undefined if it can. */
+  touchIdProblem(): Promise<string | undefined> {
+    return touchIdProblem();
+  }
+
+  /**
+   * macOS only: creates a Secure Enclave key usable only with Touch ID, then derives the KEK
+   * once with it as a check (one fingerprint). The method is saved only if the check passes.
+   */
+  async addTouchId(label = "Touch ID"): Promise<Slot> {
+    const problem = await touchIdProblem();
+    if (problem) throw new Error(problem);
+    const { seKey, ephemeralPublicKey, kek } = await enrollTouchId();
+    try {
+      this.prompts.notice("action", "Verifying: touch the Touch ID sensor…");
+      const check = await touchIdKek({ seKey, ephemeralPublicKey }, `add Touch ID to tg-secret for +${this.phone}`);
+      const ok = check.equals(kek);
+      check.fill(0);
+      if (!ok) throw new Error("verification failed: Touch ID returned a different key, the method was not added");
+      return this.vault.addSlot({ type: "touch-id", label, seKey, ephemeralPublicKey }, kek);
+    } finally {
+      kek.fill(0);
+    }
+  }
+
   /**
    * Removes an unlock method; the password can't be removed. A Windows Hello key is deleted
-   * from Windows too; a YubiKey keeps its key (delete it with `ykman piv keys delete <slot>`).
+   * from Windows too; a Touch ID key exists only as the blob in its slot, so it goes with it;
+   * a YubiKey keeps its key (delete it with `ykman piv keys delete <slot>`).
    */
   async remove(slotId: string): Promise<Slot> {
     const slot = this.list().find((s) => s.id === slotId);

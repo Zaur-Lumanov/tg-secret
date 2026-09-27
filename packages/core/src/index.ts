@@ -44,4 +44,4 @@ export { isDangerous } from "./media/files.js";
 export { AccessManager } from "./security/access.js";
 export { describeSlot } from "./security/unlock.js";
 export { checkPassword, MIN_PASSWORD_LENGTH, TooManyAttemptsError, UNLOCK_ATTEMPTS } from "./security/password.js";
-export { WrongPasswordError, type HelloSlot, type PasswordSlot, type PivSlot, type Slot } from "./security/vault.js";
+export { WrongPasswordError, type HelloSlot, type PasswordSlot, type PivSlot, type Slot, type TouchIdSlot } from "./security/vault.js";

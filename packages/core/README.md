@@ -1,6 +1,6 @@
 # tg-secret-core — Telegram secret chats for Node.js
 
-A library for Telegram **secret chats** (end-to-end encrypted): sign in, start and accept secret chats, send and receive messages and files. It implements the secret chat layer on top of [teleproto](https://github.com/sanyok12345/teleproto) (the maintained successor of GramJS) and keeps everything on disk encrypted with a local password, a YubiKey or Windows Hello.
+A library for Telegram **secret chats** (end-to-end encrypted): sign in, start and accept secret chats, send and receive messages and files. It implements the secret chat layer on top of [teleproto](https://github.com/sanyok12345/teleproto) (the maintained successor of GramJS) and keeps everything on disk encrypted with a local password, a YubiKey, Windows Hello or Touch ID.
 
 The [`tg-secret`](../cli/README.md) console client is built on it.
 
@@ -167,12 +167,14 @@ Notice levels: `title`, `info`, `hint`, `action` (the user has to do something o
 
 | Method | |
 |---|---|
-| `list()` | Unlock methods (`Slot`): the password, YubiKeys, Windows Hello. `describeSlot(slot)` gives a readable name. |
+| `list()` | Unlock methods (`Slot`): the password, YubiKeys, Windows Hello, Touch ID. `describeSlot(slot)` gives a readable name. |
 | `verifyPassword(password)` | `true` if it is the local password. Changes nothing; use it to confirm sensitive actions. |
 | `changePassword(current, next?)` | Without `next`, the new password is asked through `prompts`. |
 | `addYubikey(label?)` | Sets up a YubiKey through [`ykman`](https://www.yubico.com/support/download/yubikey-manager/), asking its PIN and so on through `prompts`, and checks it with a test decryption. |
 | `windowsHelloProblem()` | Why Windows Hello can't be added here, or `undefined`. |
 | `addWindowsHello(label?)` | Windows only. |
+| `touchIdProblem()` | Why Touch ID can't be added here, or `undefined`. |
+| `addTouchId(label?)` | macOS only: creates a Secure Enclave key usable only with Touch ID and checks it with one fingerprint. The package includes a small native helper for it (`native/tg-secret-touchid`). |
 | `remove(slotId)` | Removes a method; the password can't be removed. |
 
 ## Data directory

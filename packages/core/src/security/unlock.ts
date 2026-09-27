@@ -1,5 +1,6 @@
 import type { Prompts } from "../prompts.js";
 import { askPassword, TooManyAttemptsError, UNLOCK_ATTEMPTS, unlockVault } from "./password.js";
+import { touchIdKek } from "./touchId.js";
 import { helloKek } from "./windowsHello.js";
 import { connectedYubikeys, pivKekConsole, pivKekWindows } from "./yubikey.js";
 import { Vault, WrongPasswordError, type PivSlot, type Slot } from "./vault.js";
@@ -12,15 +13,27 @@ export function describeSlot(slot: Slot): string {
       return `YubiKey "${slot.label}" (serial ${slot.serial}, slot ${slot.pivSlot.toUpperCase()})`;
     case "windows-hello":
       return `Windows Hello "${slot.label}"`;
+    case "touch-id":
+      return `Touch ID "${slot.label}"`;
   }
 }
 
 /** Obtains the KEK of a hardware slot, asking the user whatever that method needs. */
-export async function slotKek(prompts: Prompts, slot: Exclude<Slot, { type: "password" }>, vaultPath: string): Promise<Buffer> {
+export async function slotKek(
+  prompts: Prompts,
+  slot: Exclude<Slot, { type: "password" }>,
+  vaultPath: string,
+  phone: string,
+): Promise<Buffer> {
   if (slot.type === "windows-hello") {
     if (process.platform !== "win32") throw new Error("Windows Hello is only available on Windows");
     prompts.notice("action", "Confirm in the Windows Hello dialog (if you can't see it, it may be on the taskbar)…");
     return helloKek(slot.credentialName, slot.challenge);
+  }
+  if (slot.type === "touch-id") {
+    if (process.platform !== "darwin") throw new Error("Touch ID is only available on macOS");
+    prompts.notice("action", "Touch the Touch ID sensor…");
+    return touchIdKek(slot, `unlock tg-secret for +${phone}`);
   }
   return pivKek(prompts, slot, vaultPath);
 }
@@ -42,7 +55,8 @@ async function pivKek(prompts: Prompts, slot: PivSlot, vaultPath: string): Promi
 
 /**
  * Unlocks the vault with any of its methods. With only a password it is the plain password
- * prompt; otherwise a menu, defaulting to a registered YubiKey that is plugged in.
+ * prompt; otherwise a menu, defaulting to a registered YubiKey that is plugged in,
+ * then to Touch ID on a Mac.
  * Wrong passwords still count towards the 3-attempt limit (then TooManyAttemptsError);
  * hardware failures return to the menu.
  */
@@ -51,7 +65,10 @@ export async function unlockInteractive(prompts: Prompts, path: string, phone: s
   if (!slots.some((s) => s.type !== "password")) return unlockVault(prompts, path, phone);
 
   const connected = await connectedYubikeys();
-  const preferred = slots.find((s) => s.type === "yubikey-piv" && connected.has(s.serial)) ?? slots[0];
+  const preferred =
+    slots.find((s) => s.type === "yubikey-piv" && connected.has(s.serial)) ??
+    slots.find((s) => s.type === "touch-id" && process.platform === "darwin") ??
+    slots[0];
   let passwordFailures = 0;
 
   for (;;) {
@@ -65,7 +82,7 @@ export async function unlockInteractive(prompts: Prompts, path: string, phone: s
       if (slot.type === "password") {
         return Vault.unlock(path, await askPassword(prompts, { id: "local-password", message: "Local password" }));
       }
-      const kek = await slotKek(prompts, slot, path);
+      const kek = await slotKek(prompts, slot, path, phone);
       try {
         return Vault.unlockWithKek(path, slot.id, kek);
       } finally {

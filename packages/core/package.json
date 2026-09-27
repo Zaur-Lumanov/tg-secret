@@ -1,7 +1,7 @@
 {
   "name": "tg-secret-core",
   "version": "0.1.0",
-  "description": "Telegram secret chats (end-to-end encrypted) for Node.js, with encrypted local storage and YubiKey / Windows Hello unlock",
+  "description": "Telegram secret chats (end-to-end encrypted) for Node.js, with encrypted local storage and YubiKey / Windows Hello / Touch ID unlock",
   "license": "MIT",
   "author": "Zaur Lumanov",
   "repository": {
@@ -22,11 +22,14 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "native/touchid.swift",
+    "native/tg-secret-touchid"
   ],
   "scripts": {
     "prepack": "node -e \"require('fs').copyFileSync('../../LICENSE', 'LICENSE')\"",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && node scripts/build-touchid.mjs",
+    "build:touchid": "node scripts/build-touchid.mjs",
     "typecheck": "tsc --noEmit",
     "test": "node --conditions=tg-secret-source --import tsx --test test/*.test.ts"
   },
