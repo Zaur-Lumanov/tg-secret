@@ -1,5 +1,7 @@
 # tg-secret-core — Telegram secret chats for Node.js
 
+[![npm: tg-secret-core](https://img.shields.io/npm/v/tg-secret-core?label=tg-secret-core)](https://www.npmjs.com/package/tg-secret-core) [![License: MIT](https://img.shields.io/npm/l/tg-secret-core)](https://github.com/zaur-lumanov/tg-secret/blob/main/LICENSE) ![Node.js 24.7+](https://img.shields.io/node/v/tg-secret-core)
+
 A library for Telegram **secret chats** (end-to-end encrypted): sign in, start and accept secret chats, send and receive messages and files. It implements the secret chat layer on top of [teleproto](https://github.com/sanyok12345/teleproto) (the maintained successor of GramJS) and keeps everything on disk encrypted with a local password, a YubiKey, Windows Hello or Touch ID.
 
 The [`tg-secret`](../cli/README.md) console client is built on it.
