@@ -5,6 +5,9 @@ coverage/
 *.tsbuildinfo
 *.tgz
 
+# the Touch ID helper, built from packages/core/native/touchid.swift on macOS
+packages/core/native/tg-secret-touchid
+
 # copied from the root by each package's prepack
 packages/*/LICENSE
 

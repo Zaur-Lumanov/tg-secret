@@ -20,6 +20,7 @@
     "start": "node --conditions=tg-secret-source --import tsx packages/cli/src/main.ts",
     "auth": "node --conditions=tg-secret-source --import tsx packages/cli/src/main.ts auth",
     "build": "yarn workspace tg-secret-core build && yarn workspace tg-secret build",
+    "build:touchid": "yarn workspace tg-secret-core build:touchid",
     "typecheck": "yarn workspaces run typecheck",
     "test": "yarn workspaces run test"
   },
