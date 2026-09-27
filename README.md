@@ -48,7 +48,7 @@ await session.chats.sendText(chatId, "hello");
 - Works through connection drops: messages are queued and sent once the connection is back; missed messages are fetched after reconnecting
 - Everything on disk is encrypted: authorization keys, secret chat keys, downloaded files
 - Unlock with a local password (Argon2id), a YubiKey (PIV, PIN + touch), Windows Hello or Touch ID
-- Windows, macOS and Linux; Node.js 22.12 or newer
+- Windows, macOS and Linux; Node.js 24.7 or newer
 
 ## Documentation
 
