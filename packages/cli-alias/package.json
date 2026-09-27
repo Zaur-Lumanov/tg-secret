@@ -1,6 +1,6 @@
 {
   "name": "tg-secret-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Same as the \"tg-secret\" package: console Telegram client for secret chats. Installs both commands, tg-secret and tg-secret-cli",
   "license": "MIT",
   "author": "Zaur Lumanov",
@@ -38,6 +38,6 @@
     "node": ">=24.7"
   },
   "dependencies": {
-    "tg-secret": "^0.1.0"
+    "tg-secret": "^0.1.1"
   }
 }

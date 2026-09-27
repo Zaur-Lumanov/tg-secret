@@ -1,6 +1,6 @@
 {
   "name": "tg-secret-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Telegram secret chats (end-to-end encrypted) for Node.js, with encrypted local storage and YubiKey / Windows Hello / Touch ID unlock",
   "license": "MIT",
   "author": "Zaur Lumanov",
