@@ -1,6 +1,6 @@
 # tg-secret — console client for Telegram secret chats
 
-[![npm: tg-secret-cli](https://img.shields.io/npm/v/tg-secret-cli?label=tg-secret-cli)](https://www.npmjs.com/package/tg-secret-cli) [![npm: tg-secret](https://img.shields.io/npm/v/tg-secret?label=tg-secret)](https://www.npmjs.com/package/tg-secret) [![License: MIT](https://img.shields.io/npm/l/tg-secret-core)](https://github.com/zaur-lumanov/tg-secret/blob/main/LICENSE) ![Node.js 24.7+](https://img.shields.io/node/v/tg-secret)
+[![npm: tg-secret-cli](https://img.shields.io/npm/v/tg-secret-cli?label=tg-secret-cli)](https://www.npmjs.com/package/tg-secret-cli) [![npm: tg-secret](https://img.shields.io/npm/v/tg-secret?label=tg-secret)](https://www.npmjs.com/package/tg-secret) [![CI](https://github.com/Zaur-Lumanov/tg-secret/actions/workflows/ci.yml/badge.svg)](https://github.com/Zaur-Lumanov/tg-secret/actions/workflows/ci.yml) [![Coverage](https://codecov.io/gh/Zaur-Lumanov/tg-secret/graph/badge.svg)](https://codecov.io/gh/Zaur-Lumanov/tg-secret) [![License: MIT](https://img.shields.io/npm/l/tg-secret-core)](https://github.com/zaur-lumanov/tg-secret/blob/main/LICENSE) ![Node.js 24.7+](https://img.shields.io/node/v/tg-secret)
 
 A terminal client for Telegram **secret chats** (end-to-end encrypted): start and accept chats, send messages and files, verify keys. Everything it stores on disk is encrypted with a local password, a YubiKey, Windows Hello or Touch ID.
 
