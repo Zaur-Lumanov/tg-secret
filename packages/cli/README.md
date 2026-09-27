@@ -8,7 +8,11 @@ Built on [`tg-secret-core`](../core/README.md).
 
 ```sh
 npm install -g tg-secret-cli
+# or, with Yarn 1:
+yarn global add tg-secret-cli
 ```
+
+Yarn 2 and newer have no global installs: use `yarn dlx` below, or npm. With `yarn global add`, the commands land in Yarn's own bin directory (`yarn global bin`), which must be in `PATH`.
 
 Requires Node.js 22.12 or newer. The same client is also published as `tg-secret`: both packages install both commands, `tg-secret` and `tg-secret-cli`, so use whichever you like. Install only one of the two packages globally: they provide the same commands, and if both are installed, uninstalling one of them removes the commands of the other too (install it again to get them back).
 
@@ -16,6 +20,8 @@ Without installing:
 
 ```sh
 npx tg-secret-cli +79991234567
+# or
+yarn dlx tg-secret-cli +79991234567
 ```
 
 ## Getting started
