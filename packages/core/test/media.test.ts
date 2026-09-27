@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { createCipheriv, randomBytes } from "node:crypto";
+import { join } from "node:path";
 import { test } from "node:test";
 import sharp from "sharp";
 import { isDangerous, prepareFile, sanitizeFileName } from "../src/media/files.js";
@@ -147,16 +148,19 @@ test("sanitizeFileName blocks traversal, reserved names and bidi tricks", () => 
   assert.ok(!isDangerous("report.pdf"));
 });
 
+/** a path in this OS's own format: on macOS and Linux a backslash is part of a file name */
+const BIG_PNG = join("tmp", "big.png");
+
 test("prepareFile: photos become JPEG with a 90px thumbnail", async () => {
   const png = await sharp({ create: { width: 4000, height: 3000, channels: 3, background: "#3a7" } }).png().toBuffer();
-  const p = await prepareFile("C:\\tmp\\big.png", png, true);
+  const p = await prepareFile(BIG_PNG, png, true);
   assert.equal(p.kind, "photo");
   assert.equal(p.mimeType, "image/jpeg");
   assert.equal(p.fileName, "big.jpg");
   assert.deepEqual([p.w, p.h], [2560, 1920]);
   assert.ok(p.thumb && p.thumb.w === 90 && p.thumb.h === 68);
 
-  const asDoc = await prepareFile("C:\\tmp\\big.png", png, false);
+  const asDoc = await prepareFile(BIG_PNG, png, false);
   assert.equal(asDoc.kind, "document");
   assert.equal(asDoc.data, png);
   assert.deepEqual([asDoc.w, asDoc.h], [4000, 3000]);
