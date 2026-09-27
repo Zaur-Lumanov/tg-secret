@@ -16,12 +16,12 @@ jobs:
     name: Touch ID helper
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: node packages/core/scripts/build-touchid.mjs --required
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: touchid
           path: packages/core/native/tg-secret-touchid
@@ -34,8 +34,8 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
@@ -49,7 +49,7 @@ jobs:
       - run: yarn typecheck
       - run: yarn test
       - run: yarn build
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: touchid
           path: packages/core/native
