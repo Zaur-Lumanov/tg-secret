@@ -1,5 +1,7 @@
 # tg-secret
 
+[![npm: tg-secret-cli](https://img.shields.io/npm/v/tg-secret-cli?label=tg-secret-cli)](https://www.npmjs.com/package/tg-secret-cli) [![npm: tg-secret-core](https://img.shields.io/npm/v/tg-secret-core?label=tg-secret-core)](https://www.npmjs.com/package/tg-secret-core) [![License: MIT](https://img.shields.io/npm/l/tg-secret-core)](https://github.com/zaur-lumanov/tg-secret/blob/main/LICENSE) ![Node.js 24.7+](https://img.shields.io/node/v/tg-secret-core)
+
 Telegram **secret chats** (end-to-end encrypted) for Node.js: a console client and the library it is built on.
 
 Secret chats are Telegram's device-to-device encrypted conversations. Most third-party clients and libraries don't support them. This project implements the secret chat layer (key exchange, MTProto 2.0 end-to-end encryption, encrypted media, re-keying) on top of [teleproto](https://github.com/sanyok12345/teleproto) (the maintained successor of GramJS), and keeps everything on disk encrypted with a local password, a YubiKey, Windows Hello or Touch ID.
@@ -8,8 +10,8 @@ Secret chats are Telegram's device-to-device encrypted conversations. Most third
 
 | Package | What it is | Install |
 |---|---|---|
-| [`tg-secret-cli`](packages/cli-alias) / [`tg-secret`](packages/cli) | The console client. Both packages are the same app and install both commands, `tg-secret` and `tg-secret-cli`. | `npm install -g tg-secret-cli`<br>`yarn global add tg-secret-cli` |
-| [`tg-secret-core`](packages/core) | The library: sign-in, secret chats, encrypted storage, unlock methods. | `npm install tg-secret-core`<br>`yarn add tg-secret-core` |
+| [`tg-secret-cli`](packages/cli-alias) / [`tg-secret`](packages/cli) | The console client. Both packages are the same app and install both commands, `tg-secret` and `tg-secret-cli`. On npm: [tg-secret-cli](https://www.npmjs.com/package/tg-secret-cli), [tg-secret](https://www.npmjs.com/package/tg-secret). | `npm install -g tg-secret-cli`<br>`yarn global add tg-secret-cli` |
+| [`tg-secret-core`](packages/core) | The library: sign-in, secret chats, encrypted storage, unlock methods. On npm: [tg-secret-core](https://www.npmjs.com/package/tg-secret-core). | `npm install tg-secret-core`<br>`yarn add tg-secret-core` |
 
 ## Console client
 
