@@ -6,12 +6,12 @@
   "author": "Zaur Lumanov",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zaur-lumanov/tg-secret.git",
+    "url": "git+https://github.com/Zaur-Lumanov/tg-secret.git",
     "directory": "packages/cli"
   },
-  "homepage": "https://github.com/zaur-lumanov/tg-secret/tree/main/packages/cli#readme",
+  "homepage": "https://github.com/Zaur-Lumanov/tg-secret/tree/main/packages/cli#readme",
   "bugs": {
-    "url": "https://github.com/zaur-lumanov/tg-secret/issues"
+    "url": "https://github.com/Zaur-Lumanov/tg-secret/issues"
   },
   "type": "module",
   "bin": {
