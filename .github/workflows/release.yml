@@ -37,8 +37,9 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
+          # no registry-url: the .npmrc it writes refers to NODE_AUTH_TOKEN, which Yarn 1 can't
+          # resolve without a token; trusted publishing needs no .npmrc at all
           node-version: 24
-          registry-url: https://registry.npmjs.org
       # trusted publishing needs npm 11.5.1 or newer
       - run: npm install -g npm@latest yarn@1.22.22
       - name: Tag matches the package versions
