@@ -9,7 +9,13 @@ const HELLO = process.platform === "win32";
 /** Touch ID likewise only on macOS. */
 const TOUCH_ID = process.platform === "darwin";
 
-const HELP = `
+/** Which of the one-per-account methods to offer: only on their OS, and only until added. */
+interface Offers {
+  hello: boolean;
+  touchId: boolean;
+}
+
+const help = (offers: Offers) => `
 ${c.bold("Commands:")}
   /chats                  list secret chats
   /new <@username|+phone> start a secret chat
@@ -28,7 +34,7 @@ ${c.bold("Security:")}
   /passwd                 change the local password
   /access                 list unlock methods
   /access add yubikey [name]   add a YubiKey (PIN + touch)
-${HELLO ? "  /access add hello [name]     add Windows Hello\n" : ""}${TOUCH_ID ? "  /access add touchid [name]   add Touch ID\n" : ""}  /access remove <N>      remove an unlock method
+${offers.hello ? "  /access add hello [name]     add Windows Hello\n" : ""}${offers.touchId ? "  /access add touchid [name]   add Touch ID\n" : ""}  /access remove <N>      remove an unlock method
   /lock                   lock: keys are wiped from memory, the screen is cleared
 
 ${c.bold("Files:")}
@@ -281,7 +287,7 @@ export class Repl {
         revealInFolder(await this.localFile(this.numArg(args[0])));
         break;
       case "/help":
-        this.term.print(HELP);
+        this.term.print(help(this.offers()));
         break;
       case "/chats":
         this.listChats();
@@ -459,15 +465,31 @@ export class Repl {
     return yes;
   }
 
+  /** Number of the method of this type in /access, or 0 if there is none. */
+  private addedAs(type: "windows-hello" | "touch-id"): number {
+    return this.session.access.list().findIndex((s) => s.type === type) + 1;
+  }
+
+  private offers(): Offers {
+    return { hello: HELLO && !this.addedAs("windows-hello"), touchId: TOUCH_ID && !this.addedAs("touch-id") };
+  }
+
+  /** Windows Hello and Touch ID are one per account: the same person on the same device. */
+  private assertNotAdded(type: "windows-hello" | "touch-id", name: string): void {
+    const n = this.addedAs(type);
+    if (n) throw new Error(`${name} is already added (${n} in /access). To set it up again, remove it first: /access remove ${n}`);
+  }
+
   private listAccess(): void {
     const slots = this.session.access.list();
+    const offers = this.offers();
     this.term.print(
       c.bold("Unlock methods:"),
       ...slots.map((s, i) => {
         const since = s.createdAt ? c.dim(` — added ${new Date(s.createdAt * 1000).toLocaleDateString()}`) : "";
         return `  ${i + 1}) ${describeSlot(s)}${since}`;
       }),
-      c.dim(`Add: /access add yubikey${HELLO ? " | /access add hello" : ""}${TOUCH_ID ? " | /access add touchid" : ""}, remove: /access remove <N>`),
+      c.dim(`Add: /access add yubikey${offers.hello ? " | /access add hello" : ""}${offers.touchId ? " | /access add touchid" : ""}, remove: /access remove <N>`),
     );
   }
 
@@ -491,6 +513,7 @@ export class Repl {
     }
 
     if (sub === "add" && what === "hello") {
+      this.assertNotAdded("windows-hello", "Windows Hello");
       const problem = await access.windowsHelloProblem();
       if (problem) throw new Error(problem);
       const label = rest.replace(/^\s*add\s+hello\s*/i, "").trim() || "Windows Hello";
@@ -501,6 +524,7 @@ export class Repl {
     }
 
     if (sub === "add" && what === "touchid") {
+      this.assertNotAdded("touch-id", "Touch ID");
       const problem = await access.touchIdProblem();
       if (problem) throw new Error(problem);
       const label = rest.replace(/^\s*add\s+touchid\s*/i, "").trim() || "Touch ID";
@@ -526,7 +550,10 @@ export class Repl {
       return;
     }
 
-    throw new Error(`Usage: /access | /access add yubikey [name]${HELLO ? " | /access add hello [name]" : ""}${TOUCH_ID ? " | /access add touchid [name]" : ""} | /access remove <N>`);
+    const offers = this.offers();
+    throw new Error(
+      `Usage: /access | /access add yubikey [name]${offers.hello ? " | /access add hello [name]" : ""}${offers.touchId ? " | /access add touchid [name]" : ""} | /access remove <N>`,
+    );
   }
 
   private async changePassword(): Promise<void> {

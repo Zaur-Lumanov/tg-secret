@@ -168,8 +168,8 @@ They work the same outside and inside a dialog.
 | `/passwd` | Changes the local password: first the current one (checked right away), then the new one twice. Only the master key is re-encrypted; the data and other unlock methods are not touched. |
 | `/access` | Numbered list of unlock methods. |
 | `/access add yubikey [name]` | Adds a YubiKey: confirmation with the local password, key setup with `ykman` (PIN, touch), then a test decryption. The method is saved only if the test passes. |
-| `/access add hello [name]` | Adds Windows Hello (Windows only): confirmation with the password, then two confirmations in the Windows Hello dialog. |
-| `/access add touchid [name]` | Adds Touch ID (macOS only): confirmation with the password, then one fingerprint to check the new key. |
+| `/access add hello [name]` | Adds Windows Hello (Windows only): confirmation with the password, then two confirmations in the Windows Hello dialog. One per account: while it is added, the command is not offered. |
+| `/access add touchid [name]` | Adds Touch ID (macOS only): confirmation with the password, then one fingerprint to check the new key. One per account, like Windows Hello. |
 | `/access remove <N>` | Removes unlock method `N` (with confirmation and the password). The password can't be removed. The key on the YubiKey remains; the client shows the `ykman` command to delete it too. |
 | `/lock` | Locks the session: the connection is closed, keys in memory are wiped, temporary file copies are deleted, the screen and scrollback are cleared. The local password is needed to continue. Unsent messages are kept and sent after unlocking. |
 | `/help` | Short command reference. |
