@@ -8,13 +8,13 @@ Secret chats are Telegram's device-to-device encrypted conversations. Most third
 
 | Package | What it is | Install |
 |---|---|---|
-| [`tg-secret-cli`](packages/cli-alias) / [`tg-secret`](packages/cli) | The console client. Both packages are the same app and install both commands, `tg-secret` and `tg-secret-cli`. | `npm install -g tg-secret-cli` |
-| [`tg-secret-core`](packages/core) | The library: sign-in, secret chats, encrypted storage, unlock methods. | `npm install tg-secret-core` |
+| [`tg-secret-cli`](packages/cli-alias) / [`tg-secret`](packages/cli) | The console client. Both packages are the same app and install both commands, `tg-secret` and `tg-secret-cli`. | `npm install -g tg-secret-cli`<br>`yarn global add tg-secret-cli` |
+| [`tg-secret-core`](packages/core) | The library: sign-in, secret chats, encrypted storage, unlock methods. | `npm install tg-secret-core`<br>`yarn add tg-secret-core` |
 
 ## Console client
 
 ```sh
-npm install -g tg-secret-cli
+npm install -g tg-secret-cli     # or: yarn global add tg-secret-cli
 tg-secret +79991234567
 ```
 
