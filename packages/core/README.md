@@ -8,6 +8,8 @@ The [`tg-secret`](../cli/README.md) console client is built on it.
 
 ```sh
 npm install tg-secret-core
+# or
+yarn add tg-secret-core
 ```
 
 Requires Node.js 22.12 or newer. The package is ESM; `require("tg-secret-core")` works too on these Node versions. TypeScript types are included.
@@ -19,7 +21,7 @@ Two optional dependencies are installed by default. If one fails to install, the
 | `sharp` | photo compression and previews | files are sent as documents, without previews |
 | `koffi` | YubiKey access over PC/SC | YubiKey unlock works only through the Windows PIN dialog |
 
-To skip them on purpose: `npm install tg-secret-core --omit=optional`.
+To skip them on purpose: `npm install tg-secret-core --omit=optional` (Yarn 1: `yarn add tg-secret-core --ignore-optional`).
 
 ## Quick start
 
