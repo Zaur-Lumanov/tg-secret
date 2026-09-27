@@ -15,29 +15,29 @@
   },
   "type": "module",
   "bin": {
-    "tg-secret": "dist/main.js",
-    "tg-secret-cli": "dist/main.js"
+    "tg-secret": "dist/bin.js",
+    "tg-secret-cli": "dist/bin.js"
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./main": "./dist/main.js"
+    "./main": "./dist/bin.js"
   },
   "files": [
     "dist"
   ],
   "scripts": {
     "prepack": "node -e \"require('fs').copyFileSync('../../LICENSE', 'LICENSE')\"",
-    "start": "node --conditions=tg-secret-source --import tsx src/main.ts",
-    "auth": "node --conditions=tg-secret-source --import tsx src/main.ts auth",
+    "start": "node --conditions=tg-secret-source --import tsx src/bin.ts",
+    "auth": "node --conditions=tg-secret-source --import tsx src/bin.ts auth",
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "test": "node --conditions=tg-secret-source --import tsx --test test/*.test.ts"
   },
   "engines": {
-    "node": ">=22.12"
+    "node": ">=24.7"
   },
   "dependencies": {
     "tg-secret-core": "^0.1.0"

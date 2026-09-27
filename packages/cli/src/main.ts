@@ -1,6 +1,5 @@
-#!/usr/bin/env node
 /**
- * The `tg-secret` / `tg-secret-cli` command:
+ * The `tg-secret` / `tg-secret-cli` command (started by bin.ts):
  *   tg-secret <phone> [options]        the secret chat console
  *   tg-secret auth <phone> [options]   sign the number in and exit
  */
