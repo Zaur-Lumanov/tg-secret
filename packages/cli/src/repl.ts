@@ -50,6 +50,12 @@ const STATE_LABEL: Record<SecretChat["state"], string> = {
 };
 
 const TYPING_THROTTLE_MS = 5000;
+/**
+ * On a flaky network (a slow VPN) the connection drops and comes back every few seconds.
+ * The prompt and the notices follow it only once a state has held this long.
+ */
+const OFFLINE_NOTICE_MS = 5000;
+const ONLINE_NOTICE_MS = 10_000;
 /** Incoming files up to this size are downloaded and decrypted automatically. */
 const AUTO_DOWNLOAD_LIMIT = 20 * 1024 * 1024;
 
@@ -89,6 +95,9 @@ export function splitPathArg(rest: string): { path: string; caption: string } {
 export class Repl {
   private current?: number;
   private lastTyping = 0;
+  /** connection state as shown to the user; lags behind the real one, see OFFLINE_NOTICE_MS */
+  private shownOnline = true;
+  private connectionTimer?: NodeJS.Timeout;
 
   private finish?: (result: ReplResult) => void;
   private readonly secret: SecretChatManager;
@@ -104,6 +113,7 @@ export class Repl {
   /** Runs until /quit (or Ctrl+C) → "quit", or /lock → "lock". Detaches its listeners either way. */
   run(): Promise<ReplResult> {
     this.term.replActive = true;
+    this.shownOnline = this.secret.isOnline();
     this.bindEvents();
     this.updatePrompt();
     this.secret.resumePending();
@@ -124,6 +134,7 @@ export class Repl {
       this.finish = (result) => {
         this.finish = undefined;
         this.term.replActive = false;
+        clearTimeout(this.connectionTimer);
         process.stdin.off("keypress", onKeypress);
         this.term.rl.off("line", onLine);
         this.term.rl.off("close", onClose);
@@ -191,11 +202,19 @@ export class Repl {
     });
     s.on("error", (err, chat) => this.term.print(c.red(`Error${chat ? ` [${chat.id}]` : ""}: ${errText(err)}`)));
     s.on("connection", (online) => {
-      this.updatePrompt();
-      this.term.print(
-        online
-          ? c.green("✔ Connection to Telegram restored")
-          : c.yellow("⚠ No connection to Telegram — reconnecting. Messages will be sent once the connection is back."),
+      clearTimeout(this.connectionTimer);
+      if (online === this.shownOnline) return; // a short drop: nothing was shown, nothing to take back
+      this.connectionTimer = setTimeout(
+        () => {
+          this.shownOnline = online;
+          this.updatePrompt();
+          this.term.print(
+            online
+              ? c.green("✔ Connection to Telegram restored")
+              : c.yellow("⚠ No connection to Telegram — reconnecting. Messages will be sent once the connection is back."),
+          );
+        },
+        online ? ONLINE_NOTICE_MS : OFFLINE_NOTICE_MS,
       );
     });
     s.on("caughtUp", (count) => this.term.print(c.dim(`Missed messages received: ${count}`)));
@@ -427,7 +446,7 @@ export class Repl {
 
   private updatePrompt(): void {
     const chat = this.current !== undefined ? this.secret.get(this.current) : undefined;
-    const offline = this.secret.isOnline() ? "" : c.yellow("[offline] ");
+    const offline = this.shownOnline ? "" : c.yellow("[offline] ");
     this.term.setPrompt(offline + (chat ? `${c.green("🔒 " + chat.peerName)}> ` : "> "));
   }
 
