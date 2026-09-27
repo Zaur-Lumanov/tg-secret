@@ -4,6 +4,9 @@ import { renderIdenticon, renderKeyHex } from "./keyVisual.js";
 import { openWithSystem, revealInFolder } from "./system.js";
 import { c, type Terminal } from "./terminal.js";
 
+/** Windows Hello exists only on Windows: elsewhere the CLI doesn't mention it at all. */
+const HELLO = process.platform === "win32";
+
 const HELP = `
 ${c.bold("Commands:")}
   /chats                  list secret chats
@@ -23,8 +26,7 @@ ${c.bold("Security:")}
   /passwd                 change the local password
   /access                 list unlock methods
   /access add yubikey [name]   add a YubiKey (PIN + touch)
-  /access add hello [name]     add Windows Hello (Windows only)
-  /access remove <N>      remove an unlock method
+${HELLO ? "  /access add hello [name]     add Windows Hello\n" : ""}  /access remove <N>      remove an unlock method
   /lock                   lock: keys are wiped from memory, the screen is cleared
 
 ${c.bold("Files:")}
@@ -444,7 +446,7 @@ export class Repl {
         const since = s.createdAt ? c.dim(` — added ${new Date(s.createdAt * 1000).toLocaleDateString()}`) : "";
         return `  ${i + 1}) ${describeSlot(s)}${since}`;
       }),
-      c.dim("Add: /access add yubikey | /access add hello, remove: /access remove <N>"),
+      c.dim(`Add: /access add yubikey${HELLO ? " | /access add hello" : ""}, remove: /access remove <N>`),
     );
   }
 
@@ -493,7 +495,7 @@ export class Repl {
       return;
     }
 
-    throw new Error("Usage: /access | /access add yubikey [name] | /access add hello [name] | /access remove <N>");
+    throw new Error(`Usage: /access | /access add yubikey [name]${HELLO ? " | /access add hello [name]" : ""} | /access remove <N>`);
   }
 
   private async changePassword(): Promise<void> {
