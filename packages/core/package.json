@@ -34,7 +34,7 @@
     "test": "node --conditions=tg-secret-source --import tsx --test test/*.test.ts"
   },
   "engines": {
-    "node": ">=22.12"
+    "node": ">=24.7"
   },
   "dependencies": {
     "big-integer": "^1.6.52",

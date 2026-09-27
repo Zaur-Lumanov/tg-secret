@@ -1,5 +1,7 @@
+// argon2Sync through the namespace: a named import of it would fail to link on Node.js < 24.7,
+// before nodeCompat.ts could explain what is wrong
+import * as nodeCrypto from "node:crypto";
 import {
-  argon2Sync,
   createCipheriv,
   createDecipheriv,
   createSecretKey,
@@ -123,7 +125,7 @@ export type Purpose = "account" | "session" | "secret-chats" | "file";
 function deriveKek(password: string, kdf: KdfParams): Buffer {
   const message = Buffer.from(password.normalize("NFC"), "utf8");
   try {
-    return argon2Sync("argon2id", {
+    return nodeCrypto.argon2Sync("argon2id", {
       message,
       nonce: Buffer.from(kdf.salt, "base64"),
       memory: kdf.memory,

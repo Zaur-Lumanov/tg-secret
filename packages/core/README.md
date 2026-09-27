@@ -12,7 +12,7 @@ npm install tg-secret-core
 yarn add tg-secret-core
 ```
 
-Requires Node.js 22.12 or newer. The package is ESM; `require("tg-secret-core")` works too on these Node versions. TypeScript types are included.
+Requires Node.js 24.7 or newer. The package is ESM; `require("tg-secret-core")` works too on these Node versions. TypeScript types are included.
 
 Two optional dependencies are installed by default. If one fails to install, the library still works without the feature:
 
