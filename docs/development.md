@@ -29,8 +29,10 @@ yarn start +79991234567   # the same as `tg-secret`, straight from the TypeScrip
 yarn auth  +79991234567   # the same as `tg-secret auth`: sign in only
 yarn test                 # unit tests of every package
 yarn typecheck
-yarn build                # packages/*/dist
+yarn build                # packages/*/dist, and the Touch ID helper on macOS
 ```
+
+On macOS, Touch ID needs a native helper: `yarn build:touchid` compiles `packages/core/native/touchid.swift` into `packages/core/native/tg-secret-touchid` (a universal binary with an ad-hoc signature; needs the Xcode Command Line Tools, `xcode-select --install`). `yarn start` runs from sources but uses this binary, so build it once. A release must be built on macOS with `node scripts/build-touchid.mjs --required`, so that the published package includes it.
 
 `yarn start` and `yarn auth` accept the client's arguments (`--debug`, `--data-dir`, `--password`) and don't change the current directory, so relative paths in `/send` work as expected.
 

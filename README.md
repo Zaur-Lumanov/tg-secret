@@ -2,7 +2,7 @@
 
 Telegram **secret chats** (end-to-end encrypted) for Node.js: a console client and the library it is built on.
 
-Secret chats are Telegram's device-to-device encrypted conversations. Most third-party clients and libraries don't support them. This project implements the secret chat layer (key exchange, MTProto 2.0 end-to-end encryption, encrypted media, re-keying) on top of [teleproto](https://github.com/sanyok12345/teleproto) (the maintained successor of GramJS), and keeps everything on disk encrypted with a local password, a YubiKey or Windows Hello.
+Secret chats are Telegram's device-to-device encrypted conversations. Most third-party clients and libraries don't support them. This project implements the secret chat layer (key exchange, MTProto 2.0 end-to-end encryption, encrypted media, re-keying) on top of [teleproto](https://github.com/sanyok12345/teleproto) (the maintained successor of GramJS), and keeps everything on disk encrypted with a local password, a YubiKey, Windows Hello or Touch ID.
 
 ## Packages
 
@@ -47,7 +47,7 @@ await session.chats.sendText(chatId, "hello");
 - Media: photos (with previews), videos, audio, voice messages, documents; sending and receiving, encrypted end to end
 - Works through connection drops: messages are queued and sent once the connection is back; missed messages are fetched after reconnecting
 - Everything on disk is encrypted: authorization keys, secret chat keys, downloaded files
-- Unlock with a local password (Argon2id), a YubiKey (PIV, PIN + touch) or Windows Hello
+- Unlock with a local password (Argon2id), a YubiKey (PIV, PIN + touch), Windows Hello or Touch ID
 - Windows, macOS and Linux; Node.js 22.12 or newer
 
 ## Documentation

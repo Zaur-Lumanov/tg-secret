@@ -27,11 +27,13 @@ Each account is a folder `accounts/<phone number>/` in the [data directory](../p
 | Local password (always present) | Argon2id: 256 MiB of memory, 3 passes, parallelism 4 (about 0.35 s on a modern CPU). |
 | YubiKey (PIV) | A random KEK, encrypted with RSA-OAEP to an RSA-2048 key generated on the YubiKey. Decrypting it needs the YubiKey, its PIN and a touch (touch policy "always"). The private key never leaves the device. |
 | Windows Hello | Windows Hello signs a stored random challenge with a key it keeps (in the TPM when there is one) after the user confirms; the KEK is derived from the signature. The same approach as KeePassXC's quick unlock. |
+| Touch ID | A P-256 key is created in the Secure Enclave with an access control that requires Touch ID (current fingerprint set) for every use. On enrollment a one-time P-256 key pair is generated, and the KEK is HKDF-SHA256 of its ECDH secret with the Secure Enclave key; the one-time private key is dropped. Only the Secure Enclave, after a fingerprint, can compute the secret again. The same approach as age-plugin-se. |
 
 The password can't be removed, so there is always a fallback. Changing the password re-wraps only the master key; the data isn't re-encrypted.
 
 Consequences worth knowing:
 - **Windows Hello** is bound to this computer and this Windows user. Anyone who can sign in to that Windows account (or knows its Windows Hello PIN) and runs the client can unlock it.
+- **Touch ID** is bound to this Mac. Adding a fingerprint in macOS makes the key unusable, so the Mac's password alone isn't enough to get in; the password of the client still works then.
 - **YubiKey**: after 3 wrong PINs the YubiKey blocks the key until the PUK is entered. A lost YubiKey can be removed with `/access remove`; the password still works.
 - **A forgotten password** can't be recovered. Without another unlock method, the only way out is to sign in again; the secret chats are lost, since their keys can't be decrypted.
 
