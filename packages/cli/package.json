@@ -1,7 +1,7 @@
 {
   "name": "tg-secret",
   "version": "0.1.0",
-  "description": "Console Telegram client for secret chats (end-to-end encrypted), with encrypted local storage and YubiKey / Windows Hello unlock",
+  "description": "Console Telegram client for secret chats (end-to-end encrypted), with encrypted local storage and YubiKey / Windows Hello / Touch ID unlock",
   "license": "MIT",
   "author": "Zaur Lumanov",
   "repository": {

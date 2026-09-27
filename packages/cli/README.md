@@ -1,6 +1,6 @@
 # tg-secret — console client for Telegram secret chats
 
-A terminal client for Telegram **secret chats** (end-to-end encrypted): start and accept chats, send messages and files, verify keys. Everything it stores on disk is encrypted with a local password, a YubiKey or Windows Hello.
+A terminal client for Telegram **secret chats** (end-to-end encrypted): start and accept chats, send messages and files, verify keys. Everything it stores on disk is encrypted with a local password, a YubiKey, Windows Hello or Touch ID.
 
 Built on [`tg-secret-core`](../core/README.md).
 
@@ -62,9 +62,9 @@ On every start the client asks for the local password and exits after 3 wrong at
 
 An old-format (unencrypted) account is converted to the encrypted format on the first start: you are asked to choose a password, no new sign-in is needed.
 
-### YubiKey and Windows Hello
+### YubiKey, Windows Hello and Touch ID
 
-Besides the password, the account can be unlocked with hardware. The password always remains as the fallback. Methods are added with `/access` (see [Security and exit](#security-and-exit)); on start the client shows a menu, and if a registered YubiKey is plugged in, it is offered by default.
+Besides the password, the account can be unlocked with hardware. The password always remains as the fallback. Methods are added with `/access` (see [Security and exit](#security-and-exit)); on start the client shows a menu, and if a registered YubiKey is plugged in, it is offered by default (otherwise Touch ID, on a Mac).
 
 **YubiKey (PIV, PIN + touch).** An RSA-2048 key is generated on the YubiKey; its private part never leaves the device. Unlocking requires the YubiKey itself, its PIN and a touch. After 3 wrong PINs in a row the YubiKey blocks the key until the PUK is entered. Several YubiKeys can be added (for example, a main and a backup one).
 - The PIN can be entered in the console (Windows, Linux, macOS) or, on Windows, in the system smart card PIN dialog. The choice is asked on unlock and remembered.
@@ -73,6 +73,8 @@ Besides the password, the account can be unlocked with hardware. The password al
 - The key is created in PIV slot 9D. If it is used by another program, the client offers a free retired slot (82–95); entering the PIN in the Windows dialog may not work with retired slots.
 
 **Windows Hello (Windows PIN, fingerprint, face).** Windows only. Windows Hello keeps a key (in the TPM, if there is one) and uses it only after you confirm. The method is bound to this computer and Windows user: anyone who knows the Windows PIN and sits at the computer can open the client too.
+
+**Touch ID.** macOS only (Apple Silicon, or an Intel Mac with a T2 chip). A key is created in the Secure Enclave and can be used only after a fingerprint; it never leaves the chip. The method is bound to this Mac. Enrolling a new fingerprint in macOS makes the key unusable (so someone who knows the Mac password can't add their own finger); then unlock with the password and add Touch ID again. With the lid closed Touch ID is unavailable, unless the keyboard has its own sensor.
 
 ## Data storage
 
@@ -167,6 +169,7 @@ They work the same outside and inside a dialog.
 | `/access` | Numbered list of unlock methods. |
 | `/access add yubikey [name]` | Adds a YubiKey: confirmation with the local password, key setup with `ykman` (PIN, touch), then a test decryption. The method is saved only if the test passes. |
 | `/access add hello [name]` | Adds Windows Hello (Windows only): confirmation with the password, then two confirmations in the Windows Hello dialog. |
+| `/access add touchid [name]` | Adds Touch ID (macOS only): confirmation with the password, then one fingerprint to check the new key. |
 | `/access remove <N>` | Removes unlock method `N` (with confirmation and the password). The password can't be removed. The key on the YubiKey remains; the client shows the `ykman` command to delete it too. |
 | `/lock` | Locks the session: the connection is closed, keys in memory are wiped, temporary file copies are deleted, the screen and scrollback are cleared. The local password is needed to continue. Unsent messages are kept and sent after unlocking. |
 | `/help` | Short command reference. |

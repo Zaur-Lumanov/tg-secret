@@ -6,6 +6,8 @@ import { c, type Terminal } from "./terminal.js";
 
 /** Windows Hello exists only on Windows: elsewhere the CLI doesn't mention it at all. */
 const HELLO = process.platform === "win32";
+/** Touch ID likewise only on macOS. */
+const TOUCH_ID = process.platform === "darwin";
 
 const HELP = `
 ${c.bold("Commands:")}
@@ -26,7 +28,7 @@ ${c.bold("Security:")}
   /passwd                 change the local password
   /access                 list unlock methods
   /access add yubikey [name]   add a YubiKey (PIN + touch)
-${HELLO ? "  /access add hello [name]     add Windows Hello\n" : ""}  /access remove <N>      remove an unlock method
+${HELLO ? "  /access add hello [name]     add Windows Hello\n" : ""}${TOUCH_ID ? "  /access add touchid [name]   add Touch ID\n" : ""}  /access remove <N>      remove an unlock method
   /lock                   lock: keys are wiped from memory, the screen is cleared
 
 ${c.bold("Files:")}
@@ -465,7 +467,7 @@ export class Repl {
         const since = s.createdAt ? c.dim(` — added ${new Date(s.createdAt * 1000).toLocaleDateString()}`) : "";
         return `  ${i + 1}) ${describeSlot(s)}${since}`;
       }),
-      c.dim(`Add: /access add yubikey${HELLO ? " | /access add hello" : ""}, remove: /access remove <N>`),
+      c.dim(`Add: /access add yubikey${HELLO ? " | /access add hello" : ""}${TOUCH_ID ? " | /access add touchid" : ""}, remove: /access remove <N>`),
     );
   }
 
@@ -498,6 +500,16 @@ export class Repl {
       return;
     }
 
+    if (sub === "add" && what === "touchid") {
+      const problem = await access.touchIdProblem();
+      if (problem) throw new Error(problem);
+      const label = rest.replace(/^\s*add\s+touchid\s*/i, "").trim() || "Touch ID";
+      await this.confirmPassword();
+      await access.addTouchId(label);
+      this.term.print(c.green(`✔ Touch ID "${label}" added. Choose it in the unlock menu on start.`));
+      return;
+    }
+
     if (sub === "remove") {
       const slot = access.list()[Number(what) - 1];
       if (!slot) throw new Error("Specify a method number from /access");
@@ -514,7 +526,7 @@ export class Repl {
       return;
     }
 
-    throw new Error(`Usage: /access | /access add yubikey [name]${HELLO ? " | /access add hello [name]" : ""} | /access remove <N>`);
+    throw new Error(`Usage: /access | /access add yubikey [name]${HELLO ? " | /access add hello [name]" : ""}${TOUCH_ID ? " | /access add touchid [name]" : ""} | /access remove <N>`);
   }
 
   private async changePassword(): Promise<void> {
