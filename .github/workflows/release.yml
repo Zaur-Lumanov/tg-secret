@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: 24
       - run: node packages/core/scripts/build-touchid.mjs --required
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: touchid
           path: packages/core/native/tg-secret-touchid
