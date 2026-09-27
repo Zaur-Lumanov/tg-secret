@@ -16,7 +16,7 @@ The core never talks to the terminal and never reads `process.argv`: everything 
 
 ## Requirements
 
-- Node.js 22.12 or newer
+- Node.js 24.7 or newer
 - Yarn 1 (`npm install -g yarn`)
 
 ## Commands
@@ -58,6 +58,21 @@ Relative imports inside the packages end in `.js`, as ESM requires.
 ## Tests
 
 `node:test` with `tsx`, in `packages/*/test`. Tests don't touch the network or the real data directory: they use temporary directories and fake clients. Unlock-method tests with hardware run against a simulated card.
+
+## CI and releases
+
+[CI](../.github/workflows/ci.yml) runs on every push to `main` and every pull request: type check, tests, build and a packing dry run on Windows, Linux and macOS, with Node.js 24.7 (the minimum), the latest 24 and 26. On macOS it also builds the Touch ID helper.
+
+All three packages share one version. To release:
+
+```sh
+node scripts/version.mjs 0.2.0   # sets it in every package and in their dependencies on each other
+git commit -am "chore(repo): release 0.2.0"
+git tag v0.2.0
+git push origin main v0.2.0
+```
+
+The [release workflow](../.github/workflows/release.yml) starts on the tag: it builds the Touch ID helper on macOS, checks that the tag matches the packages, runs the tests and publishes `tg-secret-core`, `tg-secret` and `tg-secret-cli` in that order through npm trusted publishing, with provenance. Versions that are already on npm are skipped, so a failed run can be restarted.
 
 ## Commits
 

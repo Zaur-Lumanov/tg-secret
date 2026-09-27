@@ -1,0 +1,70 @@
+name: Release
+
+# Publishes all three packages to npm when a version tag (v0.2.0) is pushed. The tag must
+# match the version in the packages (scripts/version.mjs). Publishing uses npm trusted
+# publishing (OIDC): no npm token is stored in the repository, and provenance is attached.
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+jobs:
+  touchid:
+    name: Touch ID helper
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - run: node packages/core/scripts/build-touchid.mjs --required
+      - uses: actions/upload-artifact@v4
+        with:
+          name: touchid
+          path: packages/core/native/tg-secret-touchid
+          if-no-files-found: error
+
+  publish:
+    needs: touchid
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      # trusted publishing needs npm 11.5.1 or newer
+      - run: npm install -g npm@latest yarn@1.22.22
+      - name: Tag matches the package versions
+        run: |
+          version=$(node scripts/version.mjs)
+          test "v$version" = "$GITHUB_REF_NAME" || { echo "tag $GITHUB_REF_NAME, packages $version"; exit 1; }
+      - run: yarn install --frozen-lockfile
+      - run: yarn typecheck
+      - run: yarn test
+      - run: yarn build
+      - uses: actions/download-artifact@v4
+        with:
+          name: touchid
+          path: packages/core/native
+      - run: chmod +x packages/core/native/tg-secret-touchid
+      # in dependency order; a version that is already on npm is skipped, so a failed run can be restarted
+      - name: Publish
+        run: |
+          for dir in core cli cli-alias; do
+            cd "packages/$dir"
+            name=$(node -p 'require("./package.json").name')
+            version=$(node -p 'require("./package.json").version')
+            if npm view "$name@$version" version >/dev/null 2>&1; then
+              echo "$name@$version is already published"
+            else
+              npm publish --provenance --access public
+            fi
+            cd - >/dev/null
+          done
