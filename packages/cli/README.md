@@ -112,6 +112,8 @@ Some commands work differently outside and inside a dialog:
 
 A chat `id` is the number from `/chats` and from notifications; it can be negative (for example, `-1349200632`), so type it in full, with the sign. File numbers `N` are the `#N` from messages; they are shared across all chats and valid until the client exits.
 
+When the connection to Telegram is lost for more than 5 seconds, the client says so and the input line gets an `[offline]` prefix; it reports the connection as restored once it has held for 10 seconds. Shorter drops (a slow VPN, for example) are not reported.
+
 ### Messages
 
 | Input | Outside a dialog | Inside a dialog |
