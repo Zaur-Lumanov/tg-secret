@@ -65,9 +65,20 @@ export class AccessManager {
     }
   }
 
-  /** Why Windows Hello can't be added here, or undefined if it can. */
+  /**
+   * Windows Hello and Touch ID are one per account: they are bound to this computer and user,
+   * so a second one would unlock with the same person and the same device.
+   */
+  private alreadyAdded(type: "windows-hello" | "touch-id", name: string): string | undefined {
+    if (!this.list().some((s) => s.type === type)) return undefined;
+    return `${name} is already added; to set it up again, remove it first`;
+  }
+
+  /** Why Windows Hello can't be added here (not Windows, not set up, already added), or undefined if it can. */
   async windowsHelloProblem(): Promise<string | undefined> {
     if (process.platform !== "win32") return "Windows Hello is only available on Windows";
+    const added = this.alreadyAdded("windows-hello", "Windows Hello");
+    if (added) return added;
     if (!(await isHelloSupported())) return "Windows Hello is not set up: enable a PIN or biometrics in Windows Settings";
     return undefined;
   }
@@ -87,9 +98,10 @@ export class AccessManager {
     }
   }
 
-  /** Why Touch ID can't be added here, or undefined if it can. */
-  touchIdProblem(): Promise<string | undefined> {
-    return touchIdProblem();
+  /** Why Touch ID can't be added here (not macOS, unavailable, already added), or undefined if it can. */
+  async touchIdProblem(): Promise<string | undefined> {
+    if (process.platform !== "darwin") return "Touch ID is only available on macOS";
+    return this.alreadyAdded("touch-id", "Touch ID") ?? touchIdProblem();
   }
 
   /**
@@ -97,7 +109,7 @@ export class AccessManager {
    * once with it as a check (one fingerprint). The method is saved only if the check passes.
    */
   async addTouchId(label = "Touch ID"): Promise<Slot> {
-    const problem = await touchIdProblem();
+    const problem = await this.touchIdProblem();
     if (problem) throw new Error(problem);
     const { seKey, ephemeralPublicKey, kek } = await enrollTouchId();
     try {

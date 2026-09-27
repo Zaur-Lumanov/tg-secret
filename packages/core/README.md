@@ -171,9 +171,9 @@ Notice levels: `title`, `info`, `hint`, `action` (the user has to do something o
 | `verifyPassword(password)` | `true` if it is the local password. Changes nothing; use it to confirm sensitive actions. |
 | `changePassword(current, next?)` | Without `next`, the new password is asked through `prompts`. |
 | `addYubikey(label?)` | Sets up a YubiKey through [`ykman`](https://www.yubico.com/support/download/yubikey-manager/), asking its PIN and so on through `prompts`, and checks it with a test decryption. |
-| `windowsHelloProblem()` | Why Windows Hello can't be added here, or `undefined`. |
+| `windowsHelloProblem()` | Why Windows Hello can't be added here (another OS, not set up, already added: one per account), or `undefined`. |
 | `addWindowsHello(label?)` | Windows only. |
-| `touchIdProblem()` | Why Touch ID can't be added here, or `undefined`. |
+| `touchIdProblem()` | Why Touch ID can't be added here (another OS, unavailable, already added: one per account), or `undefined`. |
 | `addTouchId(label?)` | macOS only: creates a Secure Enclave key usable only with Touch ID and checks it with one fingerprint. The package includes a small native helper for it (`native/tg-secret-touchid`). |
 | `remove(slotId)` | Removes a method; the password can't be removed. |
 
