@@ -1,5 +1,7 @@
 # tg-secret-cli
 
+[![npm: tg-secret-cli](https://img.shields.io/npm/v/tg-secret-cli?label=tg-secret-cli)](https://www.npmjs.com/package/tg-secret-cli) [![License: MIT](https://img.shields.io/npm/l/tg-secret-core)](https://github.com/zaur-lumanov/tg-secret/blob/main/LICENSE)
+
 Console client for Telegram **secret chats** (end-to-end encrypted).
 
 This package is the same app as [`tg-secret`](../cli/README.md) under a second name. Both packages install both commands, `tg-secret` and `tg-secret-cli`.
