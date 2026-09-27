@@ -1,5 +1,5 @@
 import type { Prompts } from "../prompts.js";
-import { TooManyAttemptsError, UNLOCK_ATTEMPTS, unlockVault } from "./password.js";
+import { askPassword, TooManyAttemptsError, UNLOCK_ATTEMPTS, unlockVault } from "./password.js";
 import { helloKek } from "./windowsHello.js";
 import { connectedYubikeys, pivKekConsole, pivKekWindows } from "./yubikey.js";
 import { Vault, WrongPasswordError, type PivSlot, type Slot } from "./vault.js";
@@ -63,7 +63,7 @@ export async function unlockInteractive(prompts: Prompts, path: string, phone: s
     });
     try {
       if (slot.type === "password") {
-        return Vault.unlock(path, await prompts.secret({ id: "local-password", message: "Local password" }));
+        return Vault.unlock(path, await askPassword(prompts, { id: "local-password", message: "Local password" }));
       }
       const kek = await slotKek(prompts, slot, path);
       try {

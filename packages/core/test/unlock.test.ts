@@ -8,6 +8,8 @@ import type { CardTransport } from "../src/security/pcsc.js";
 import { oaepDecodeSha1, Piv, WrongPinError } from "../src/security/piv.js";
 import { parseFailure } from "../src/security/powershell.js";
 import { Vault, WrongPasswordError } from "../src/security/vault.js";
+import { unlockVault } from "../src/security/password.js";
+import type { NoticeLevel, Prompts } from "../src/prompts.js";
 import { maskArgs, parsePivInfo } from "../src/security/yubikey.js";
 
 const FAST_KDF = { memory: 1024, passes: 1, parallelism: 1 };
@@ -186,4 +188,19 @@ test("secrets passed to ykman never show up in printed commands", () => {
     ["piv", "access", "change-pin", "--pin", "***", "--new-pin", "***"],
   );
   assert.deepEqual(maskArgs(["--management-key", "0102", "--protect", "--force"]), ["--management-key", "***", "--protect", "--force"]);
+});
+
+test("an empty password (a stray Enter) is asked again and doesn't count as a wrong attempt", async () => {
+  const path = join(mkdtempSync(join(tmpdir(), "tge-")), "vault.json");
+  Vault.create(path, "right-password", { memory: 1024, passes: 1, parallelism: 1 });
+  const answers = ["", "", "wrong-pass", "", "", "right-password"];
+  const errors: string[] = [];
+  const prompts = {
+    secret: async () => answers.shift()!,
+    notice: (level: NoticeLevel, ...lines: string[]) => level === "error" && errors.push(...lines),
+  } as unknown as Prompts;
+  const vault = await unlockVault(prompts, path, "79990000000");
+  assert.ok(!vault.locked);
+  assert.deepEqual(errors, ["Wrong password (1/3)"], "only the real wrong password counted");
+  assert.equal(answers.length, 0);
 });

@@ -1,4 +1,4 @@
-import type { Prompts } from "../prompts.js";
+import type { Prompts, Question } from "../prompts.js";
 import { Vault, WrongPasswordError } from "./vault.js";
 
 export const MIN_PASSWORD_LENGTH = 8;
@@ -51,10 +51,18 @@ export async function askNewPassword(prompts: Prompts): Promise<string> {
   }
 }
 
+/** Asks until something is typed: an empty answer (a stray Enter) is not a password attempt. */
+export async function askPassword(prompts: Prompts, question: Question): Promise<string> {
+  for (;;) {
+    const pw = await prompts.secret(question);
+    if (pw !== "") return pw;
+  }
+}
+
 /** Unlocks the vault with the password; throws TooManyAttemptsError after UNLOCK_ATTEMPTS wrong ones. */
 export async function unlockVault(prompts: Prompts, path: string, phone: string): Promise<Vault> {
   for (let attempt = 1; ; attempt++) {
-    const pw = await prompts.secret({ id: "local-password", message: `Local password for +${phone}` });
+    const pw = await askPassword(prompts, { id: "local-password", message: `Local password for +${phone}` });
     try {
       return Vault.unlock(path, pw);
     } catch (e) {
