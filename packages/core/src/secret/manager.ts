@@ -1,3 +1,4 @@
+import "../nodeCompat.js"; // before teleproto
 import { EventEmitter } from "node:events";
 import { randomBytes } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, rmSync, statSync } from "node:fs";

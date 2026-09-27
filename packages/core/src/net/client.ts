@@ -1,3 +1,4 @@
+import "../nodeCompat.js"; // before teleproto (see the file)
 import { TelegramClient } from "teleproto";
 import { Logger, LogLevel } from "teleproto/extensions/Logger.js";
 import { StringSession } from "teleproto/sessions/index.js";

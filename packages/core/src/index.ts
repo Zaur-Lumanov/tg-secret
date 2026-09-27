@@ -3,6 +3,9 @@
  * Start with TgSecret.open(); everything else here is what its API hands out or needs.
  */
 
+// must come first: prepares the Node.js environment before teleproto loads
+import "./nodeCompat.js";
+
 // session
 export { TgSecret, type OpenOptions, type TgSecretEvents } from "./tgSecret.js";
 export type { ChoiceQuestion, ConfirmQuestion, NoticeLevel, Prompts, Question, QuestionId } from "./prompts.js";
