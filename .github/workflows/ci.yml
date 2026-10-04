@@ -55,7 +55,7 @@ jobs:
       - run: |
           sed -i 's#^SF:#SF:packages/core/#' packages/core/coverage/lcov.info
           sed -i 's#^SF:#SF:packages/cli/#' packages/cli/coverage/lcov.info
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v7
         with:
           use_oidc: true
           files: packages/core/coverage/lcov.info,packages/cli/coverage/lcov.info
